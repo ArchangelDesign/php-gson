@@ -1,0 +1,37 @@
+{
+  "name": "archangeldesign/php-gson",
+  "description": "PHP database engine wrapper",
+  "license": "BSD-3-Clause",
+  "type": "library",
+  "keywords": [
+    "gson",
+    "entity",
+    "mapper"
+  ],
+  "authors": [
+    {
+      "name": "Rafal Martinez-Marjanski"
+    }
+  ],
+  "homepage": "http://archangel-design.com",
+  "autoload": {
+    "psr-0": {
+      "ArchangelDB" : "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.6"
+  },
+  "require-dev": {
+  },
+  "suggest": {
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev",
+      "dev-develop": "1.0-dev"
+    }
+  }
+}
