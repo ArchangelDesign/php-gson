@@ -15,14 +15,38 @@ namespace PHPGson;
 use InvalidArgumentException;
 use ReflectionClass;
 
+/**
+ * Class Extractor
+ * Used to extract methods and properties
+ * from given object
+ *
+ * @package PHPGson
+ */
 class Extractor
 {
+    /**
+     * Extract properties
+     */
     const EXTRACTION_MODE_PROPERTY = 1;
+
+    /**
+     * Extract methods
+     */
     const EXTRACTION_MODE_METHOD = 2;
 
+    /**
+     * @var Object to extract from
+     */
     private $object;
+
+    /**
+     * @var int Extraction mode
+     */
     private $mode;
 
+    /**
+     * @var ReflectionClass
+     */
     private $reflection;
 
     /**
@@ -43,10 +67,17 @@ class Extractor
         $this->reflection = new ReflectionClass($this->object);
     }
 
+    /**
+     * Returns objects methods or properties
+     * as an array
+     *
+     * @return array
+     */
     public function toArray()
     {
         switch ($this->mode) {
             case self::EXTRACTION_MODE_PROPERTY:
+                return $this->extractProperties();
                 break;
             case self::EXTRACTION_MODE_METHOD:
                 return $this->extractGetters();
@@ -54,6 +85,12 @@ class Extractor
         }
     }
 
+    /**
+     * Returns an associative array of getters
+     * where key is the name of the method
+     *
+     * @return array
+     */
     private function extractGetters()
     {
         $methods = $this->getMethods();
@@ -75,16 +112,49 @@ class Extractor
         return $resultArray;
     }
 
+    /**
+     * Returns an associative array of properties
+     * where key is the name of the property
+     *
+     * @return array
+     */
+    private function extractProperties()
+    {
+        $properties = $this->getProperties();
+
+        $resultArray = [];
+
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+
+            $resultArray[$property->getName()] = [
+                'value' => $property->getValue()
+            ];
+        }
+
+        return $resultArray;
+    }
+
+    /**
+     * @return \ReflectionProperty[]
+     */
     private function getProperties()
     {
         return $this->reflection->getProperties();
     }
 
+    /**
+     * @return \ReflectionMethod[]
+     */
     private function getMethods()
     {
         return $this->reflection->getMethods();
     }
 
+    /**
+     * @param $methodName
+     * @return \ReflectionMethod
+     */
     private function getMethod($methodName)
     {
         return $this->reflection->getMethod($methodName);

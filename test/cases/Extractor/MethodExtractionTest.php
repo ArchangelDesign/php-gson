@@ -6,10 +6,11 @@ require ROOT . '/test/abstraction/TestInterface.php';
 require ROOT . '/src/PHPGson/Extractor.php';
 require 'TestObject.php';
 
-class ExtractorTest implements TestInterface
+class MethodExtractionTest implements TestInterface
 {
     /**
      * @throws ReflectionException
+     * @throws Exception
      */
     function runTest()
     {

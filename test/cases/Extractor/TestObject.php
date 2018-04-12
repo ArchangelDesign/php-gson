@@ -1,9 +1,16 @@
 <?php
 
 class TestObject {
+
     private $name = "Raff";
 
     private $lastName = "Martinez";
+
+    private $propertyWithoutGetter = 'propertyWithoutGetter';
+
+    protected $protectedProperty = 'protectedProperty';
+
+    public $publicProperty = 'publicProperty';
 
     /**
      * @return string
