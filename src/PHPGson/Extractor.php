@@ -14,6 +14,8 @@ namespace PHPGson;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * Class Extractor
@@ -69,20 +71,30 @@ class Extractor
 
     /**
      * Returns objects methods or properties
-     * as an array
+     * as a DataTransferObject
      *
-     * @return array
+     * @return DataTransferObject
      */
-    public function toArray()
+    public function extract()
     {
+        $result = new DataTransferObject();
+
+        $fields = [];
+
         switch ($this->mode) {
             case self::EXTRACTION_MODE_PROPERTY:
-                return $this->extractProperties();
+                $fields = $this->extractProperties();
                 break;
             case self::EXTRACTION_MODE_METHOD:
-                return $this->extractGetters();
+                $fields = $this->extractGetters();
                 break;
         }
+
+        foreach ($fields as $name => $field) {
+            $result->addField($name, $field['value']);
+        }
+
+        return $result;
     }
 
     /**
@@ -103,8 +115,7 @@ class Extractor
                 $method->setAccessible(true);
 
                 $resultArray[$method->getName()] = [
-                    'closure' => $method->getClosure($this->object),
-                    'isAbstract' => $method->isAbstract(),
+                    'value' => $method->invoke($this->object)
                 ];
             }
         }
@@ -128,7 +139,8 @@ class Extractor
             $property->setAccessible(true);
 
             $resultArray[$property->getName()] = [
-                'value' => $property->getValue()
+                'value' => $property->getValue(),
+                'isMethod' => false,
             ];
         }
 
@@ -136,7 +148,7 @@ class Extractor
     }
 
     /**
-     * @return \ReflectionProperty[]
+     * @return ReflectionProperty[]
      */
     private function getProperties()
     {
@@ -144,7 +156,7 @@ class Extractor
     }
 
     /**
-     * @return \ReflectionMethod[]
+     * @return ReflectionMethod[]
      */
     private function getMethods()
     {
@@ -153,7 +165,7 @@ class Extractor
 
     /**
      * @param $methodName
-     * @return \ReflectionMethod
+     * @return ReflectionMethod
      */
     private function getMethod($methodName)
     {

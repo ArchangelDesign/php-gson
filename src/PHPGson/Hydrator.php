@@ -18,7 +18,17 @@ namespace PHPGson;
  */
 class Hydrator
 {
+    private $properties;
+
+
     public function __construct(array $properties)
     {
+    }
+
+    public function hydrate($object)
+    {
+        foreach ($this->properties as $property) {
+
+        }
     }
 }
