@@ -9,6 +9,8 @@
  * @license MIT
  */
 
+include_once __DIR__ . '/../../src/autoload.php';
+
 interface TestInterface
 {
     function runTest();

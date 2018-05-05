@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * PHPGson Library
+ * Simple entity mapper for PHP applications
+ * with minimum requirements and dependencies
+ *
+ * @author Rafal Martinez-Marjanski
+ * @package PHPGson
+ * @license MIT
+ */
+
 namespace PHPGson;
 
 use InvalidArgumentException;
@@ -22,5 +32,37 @@ class DataTransferObject
             throw new InvalidArgumentException("Duplicated method or property for {$name}");
 
         $this->fields[$name] = $value;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param string $name property/method name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (isset($this->fields[$name]))
+            return $this->fields[$name];
+
+        throw new InvalidArgumentException("Field {$name} does not exist.");
+    }
+
+    /**
+     * @param string $name property/method name
+     * @return mixed
+     */
+    public function get($name)
+    {
+        if (isset($this->fields[$name]))
+            return $this->fields[$name];
+
+        throw new InvalidArgumentException("Field {$name} does not exist.");
     }
 }
