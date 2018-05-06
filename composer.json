@@ -1,6 +1,6 @@
 {
   "name": "archangeldesign/php-gson",
-  "description": "PHP database engine wrapper",
+  "description": "PHP GSON equivalent - simple entity mapper. JSON to object and object to JSON",
   "license": "BSD-3-Clause",
   "type": "library",
   "keywords": [
