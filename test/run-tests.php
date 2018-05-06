@@ -12,11 +12,13 @@
 define('ROOT', dirname(__DIR__));
 $baseDir = __DIR__ . '/cases/';
 $cases = scandir($baseDir);
+$passedTestCount = 0;
+$failedTestCount = 0;
 
 function runTests($case)
 {
-    $passedTestCount = 0;
-    $failedTestCount = 0;
+    global $passedTestCount;
+    global $failedTestCount;
     global $baseDir;
     $files = scandir($baseDir . $case);
     foreach ($files as $file) {
@@ -31,7 +33,6 @@ function runTests($case)
         try {
             $test = new $className();
             if (!$test instanceof TestInterface) {
-                echo 'class skipped ' . $className . "\n";
                 continue;
             }
             runTestClass($test);
@@ -42,8 +43,7 @@ function runTests($case)
             $failedTestCount++;
         }
     }
-    echo "\n\n";
-    echo "$passedTestCount tests passed and $failedTestCount failed.\n\n";
+
 }
 
 function runTestClass(TestInterface $testClass)
@@ -62,3 +62,6 @@ foreach ($cases as $case) {
 
     runTests($case);
 }
+
+echo "\n\n";
+echo "$passedTestCount tests passed and $failedTestCount failed.\n\n";
