@@ -44,6 +44,47 @@ class Gson
      */
     private static function dtoToJson(DataTransferObject $dto)
     {
+        if ($dto->getMode() == Extractor::EXTRACTION_MODE_METHOD)
+            return self::serializeMethods($dto);
+
+        return self::serializeProperties($dto);
+    }
+
+    /**
+     * @param DataTransferObject $dto
+     * @return string JSON
+     */
+    private static function serializeMethods(DataTransferObject $dto)
+    {
+        return json_encode(self::getMethodsValues($dto->toArray()));
+    }
+
+    /**
+     * @param array $methods
+     * @return array
+     */
+    private static function getMethodsValues(array $methods)
+    {
+        $result = [];
+
+        foreach ($methods as $name => $value) {
+            $fieldName = lcfirst(preg_replace('/^get(?=[A-Z])/', '', $name));
+            echo "transformed {$name} to {$fieldName}\n";
+            if (is_array($value))
+                $result[$fieldName] = self::getMethodsValues($value);
+            else
+                $result[$fieldName] = $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param DataTransferObject $dto
+     * @return string JSON
+     */
+    private static function serializeProperties(DataTransferObject $dto)
+    {
         return json_encode($dto->toArray());
     }
 }

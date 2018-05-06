@@ -79,6 +79,7 @@ class Extractor
     public function extract()
     {
         $result = new DataTransferObject();
+        $result->setMode($this->mode);
 
         $fields = [];
 
@@ -92,7 +93,7 @@ class Extractor
         }
 
         foreach ($fields as $name => $field) {
-            $result->addField($name, $field['value']);
+            $result->addField($name, $field);
         }
 
         return $result;
@@ -116,13 +117,13 @@ class Extractor
             if (preg_match('/^get[A-Z]/', $method->getName())) {
                 $methodName = $method->getName();
                 if (is_object($object->$methodName())) {
-                    $resultArray[$method->getName()] = [
-                        'value' => $this->extractGetters($object->$methodName())
-                    ];
+                    $resultArray[$method->getName()] =
+                        $this->extractGetters($object->$methodName())
+                    ;
                 } else {
-                    $resultArray[$method->getName()] = [
-                        'value' => $object->$methodName()
-                    ];
+                    $resultArray[$method->getName()] =
+                        $object->$methodName()
+                    ;
                 }
             }
         }
@@ -147,10 +148,9 @@ class Extractor
         foreach ($properties as $property) {
             $property->setAccessible(true);
 
-            $resultArray[$property->getName()] = [
-                'value' => $property->getValue(),
-                'isMethod' => false,
-            ];
+            $resultArray[$property->getName()] =
+                $property->getValue()
+            ;
         }
 
         return $resultArray;
@@ -176,14 +176,5 @@ class Extractor
     {
         $reflection = new ReflectionClass($object);
         return $reflection->getMethods();
-    }
-
-    /**
-     * @param $methodName
-     * @return ReflectionMethod
-     */
-    private function getMethod($methodName)
-    {
-        return $this->reflection->getMethod($methodName);
     }
 }

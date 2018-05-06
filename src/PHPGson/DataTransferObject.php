@@ -18,6 +18,8 @@ class DataTransferObject
 {
     private $fields = [];
 
+    private $mode;
+
     /**
      * @param String $name Method or property name
      * @param Object $value property value
@@ -65,4 +67,38 @@ class DataTransferObject
 
         throw new InvalidArgumentException("Field {$name} does not exist.");
     }
+
+    /**
+     * @return array
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param array $fields
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param mixed $mode
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+
+
 }
