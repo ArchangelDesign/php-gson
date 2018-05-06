@@ -69,7 +69,6 @@ class Gson
 
         foreach ($methods as $name => $value) {
             $fieldName = lcfirst(preg_replace('/^get(?=[A-Z])/', '', $name));
-            echo "transformed {$name} to {$fieldName}\n";
             if (is_array($value))
                 $result[$fieldName] = self::getMethodsValues($value);
             else

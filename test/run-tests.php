@@ -15,6 +15,16 @@ $cases = scandir($baseDir);
 $passedTestCount = 0;
 $failedTestCount = 0;
 
+$os = strtoupper(substr(PHP_OS, 0, 3));
+
+if ($os == 'WIN')
+    system('cls');
+else
+    system('clear');
+
+echo "ArchangelDesign test suite.\n";
+echo "running on " . PHP_OS . "\n\n";
+
 function runTests($case)
 {
     global $passedTestCount;
@@ -48,7 +58,7 @@ function runTests($case)
 
 function runTestClass(TestInterface $testClass)
 {
-    echo 'running ' . $testClass->getTitle() . '... ';
+    echo str_pad('running ' . $testClass->getTitle() . '... ', 70, ' ');
     if (!$testClass->isEnabled()) {
         echo '[DISABLED] ';
         return;
