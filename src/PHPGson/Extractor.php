@@ -74,6 +74,7 @@ class Extractor
      * as a DataTransferObject
      *
      * @return DataTransferObject
+     * @throws \ReflectionException
      */
     public function extract()
     {
@@ -83,10 +84,10 @@ class Extractor
 
         switch ($this->mode) {
             case self::EXTRACTION_MODE_PROPERTY:
-                $fields = $this->extractProperties();
+                $fields = $this->extractProperties($this->object);
                 break;
             case self::EXTRACTION_MODE_METHOD:
-                $fields = $this->extractGetters();
+                $fields = $this->extractGetters($this->object);
                 break;
         }
 
@@ -101,22 +102,28 @@ class Extractor
      * Returns an associative array of getters
      * where key is the name of the method
      *
+     * @param $object
      * @return array
+     * @throws \ReflectionException
      */
-    private function extractGetters()
+    private function extractGetters($object)
     {
-        $methods = $this->getMethods();
+        $methods = $this->getMethods($object);
 
         $resultArray = [];
 
         foreach ($methods as $method) {
             if (preg_match('/^get[A-Z]/', $method->getName())) {
-                $method = $this->getMethod($method->getName());
-                $method->setAccessible(true);
-
-                $resultArray[$method->getName()] = [
-                    'value' => $method->invoke($this->object)
-                ];
+                $methodName = $method->getName();
+                if (is_object($object->$methodName())) {
+                    $resultArray[$method->getName()] = [
+                        'value' => $this->extractGetters($object->$methodName())
+                    ];
+                } else {
+                    $resultArray[$method->getName()] = [
+                        'value' => $object->$methodName()
+                    ];
+                }
             }
         }
 
@@ -127,11 +134,13 @@ class Extractor
      * Returns an associative array of properties
      * where key is the name of the property
      *
+     * @param $object
      * @return array
+     * @throws \ReflectionException
      */
-    private function extractProperties()
+    private function extractProperties($object)
     {
-        $properties = $this->getProperties();
+        $properties = $this->getProperties($object);
 
         $resultArray = [];
 
@@ -148,19 +157,25 @@ class Extractor
     }
 
     /**
+     * @param $object
      * @return ReflectionProperty[]
+     * @throws \ReflectionException
      */
-    private function getProperties()
+    private function getProperties($object)
     {
-        return $this->reflection->getProperties();
+        $reflection = new ReflectionClass($object);
+        return $reflection->getProperties();
     }
 
     /**
+     * @param $object
      * @return ReflectionMethod[]
+     * @throws \ReflectionException
      */
-    private function getMethods()
+    private function getMethods($object)
     {
-        return $this->reflection->getMethods();
+        $reflection = new ReflectionClass($object);
+        return $reflection->getMethods();
     }
 
     /**
