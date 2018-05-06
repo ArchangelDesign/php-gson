@@ -2,7 +2,7 @@
 
 use PHPGson\Extractor;
 
-require ROOT . '/test/abstraction/TestInterface.php';
+require_once ROOT . '/test/abstraction/TestInterface.php';
 require 'TestObject.php';
 
 class MethodExtractionTest implements TestInterface
@@ -21,7 +21,7 @@ class MethodExtractionTest implements TestInterface
         $dto = $extractor->extract();
 
         if (count($dto->toArray()) != 2)
-            throw new Exception('Expected 2 methods. found ' . count($dto));
+            throw new Exception('Expected 2 methods. found ' . count($dto->toArray()));
 
         if (!isset($dto->toArray()['getName']))
             throw new Exception('Method getName() not found.');
