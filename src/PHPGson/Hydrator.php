@@ -19,49 +19,57 @@ use InvalidArgumentException;
  */
 class Hydrator
 {
-    private $properties;
-
-    private $mode;
+    private function __construct() {}
 
     /**
-     * Hydrator constructor.
+     * @param $object
      * @param $jsonString
      * @param int $mode
-     * @throws InvalidArgumentException
+     * @return bool
      */
-    public function __construct($jsonString, $mode = Extractor::EXTRACTION_MODE_METHOD)
+    public static function hydrate(&$object, $jsonString, $mode = Extractor::EXTRACTION_MODE_METHOD)
     {
-        $this->properties = json_decode($jsonString);
-        $this->mode = $mode;
-        if (is_null($this->properties))
+        if (is_null(json_decode($jsonString)))
             throw new InvalidArgumentException('Invalid JSON string provided');
-    }
 
-    public function hydrate(&$object)
-    {
         if (!is_object($object))
             throw new InvalidArgumentException('Output must be an object.');
 
-        if ($this->mode == Extractor::EXTRACTION_MODE_METHOD)
-            return $this->hydrateUsingMethods($object);
+        if ($mode == Extractor::EXTRACTION_MODE_METHOD)
+            return self::hydrateUsingMethods($object, json_decode($jsonString, true));
 
-        return $this->hydrateUsingProperties($object);
+        return self::hydrateUsingProperties($object, json_decode($jsonString, true));
     }
 
     /**
      * @param $object
+     * @param array $methods
      * @return bool
      */
-    private function hydrateUsingMethods(&$object)
+    private static function hydrateUsingMethods(&$object, array $methods)
     {
+        foreach ($methods as $key => $value) {
+            $setterName = 'set' . ucfirst($key);
+            $getterName = 'get' . ucfirst($key);
+            if (is_array($value)) {
+                if (method_exists($object, $getterName))
+                    self::hydrateUsingMethods($object->$getterName(), $value);
+            } else {
+                if (method_exists($object, $setterName))
+                    $object->$setterName($value);
+            }
+        }
+        return false;
     }
 
     /**
      * @param $object
+     * @param array $properties
      * @return bool
      */
-    private function hydrateUsingProperties(&$object)
+    private static function hydrateUsingProperties(&$object, array $properties)
     {
+        return false;
     }
 
 }

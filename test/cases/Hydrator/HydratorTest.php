@@ -11,9 +11,8 @@ class HydratorTest implements TestInterface
      */
     function runTest()
     {
-        $hydrator = new Hydrator('{"username":"archangel"}');
         $object = new HydratorTestObject();
-        $hydrator->hydrate($object);
+        Hydrator::hydrate($object, '{"username":"archangel"}');
         if ($object->getUsername() != 'archangel')
             throw new Exception('Hydration failed.');
     }
