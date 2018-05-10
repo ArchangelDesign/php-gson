@@ -19,6 +19,9 @@ use ReflectionException;
 class Gson
 {
     /**
+     * Converts given object to JSON string
+     * using either properties or getters (serialize)
+     *
      * @param $object
      * @param int $mode
      * @return string
@@ -36,6 +39,20 @@ class Gson
         $dto = $extractor->extract();
 
         return self::dtoToJson($dto);
+    }
+
+    /**
+     * Hydrate an object based on the JSON string (deserialize)
+     *
+     * @param Object|null $object
+     * @param string $jsonString
+     * @param int $mode
+     * @param string $className class to create if object is null
+     * @return bool true if success
+     */
+    public static function fromJson(&$object, $jsonString, $mode = Extractor::EXTRACTION_MODE_METHOD, $className = null)
+    {
+        return Hydrator::hydrate($object, $jsonString, $mode, $className);
     }
 
     /**
