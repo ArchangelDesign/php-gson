@@ -8,12 +8,13 @@
     "entity",
     "mapper"
   ],
+  "version": "1.1",
   "authors": [
     {
       "name": "Rafal Martinez-Marjanski"
     }
   ],
-  "homepage": "http://archangel-design.com",
+  "homepage": "https://archangeldesign.github.io/php-gson/",
   "autoload": {
     "psr-0": {
       "PHPGson" : "src/"
@@ -23,6 +24,7 @@
     "php": ">=5.6"
   },
   "require-dev": {
+    "phpunit/phpunit": "^8"
   },
   "suggest": {
   },
@@ -30,7 +32,7 @@
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
-      "dev-master": "1.0-dev",
+      "dev-master": "1.0",
       "dev-develop": "1.0-dev"
     }
   }
