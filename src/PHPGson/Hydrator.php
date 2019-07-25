@@ -12,6 +12,7 @@
 
 namespace PHPGson;
 use InvalidArgumentException;
+use PHPGson\Exception\ClassNotFoundException;
 
 /**
  * Class Hydrator
@@ -58,8 +59,20 @@ class Hydrator
             $getterName = 'get' . ucfirst($key);
             if (is_array($value)) {
                 if (method_exists($object, $getterName)) {
-                    self::createObjectIfNull($object, $getterName, $setterName, $key);
-                    self::hydrateUsingMethods($object->$getterName(), $value);
+                    try {
+                        self::createObjectIfNull($object, $getterName, $setterName, $key);
+                        $obj = $object->$getterName();
+                        self::hydrateUsingMethods($obj, $value);
+                    } catch (ClassNotFoundException $e) {
+                        // thrown if sub-object is a plain array
+                        // instead of instantiable object
+                        // @TODO: here's a catch, what if we have an array that has the same name as a class?
+                        // @TODO: annotation required
+                        if (is_null($object->$getterName()))
+                            $object->$setterName([]);
+                        $object->$setterName($value);
+                    }
+
                 }
             } else {
                 if (method_exists($object, $setterName))
@@ -81,21 +94,25 @@ class Hydrator
 
     /**
      * Used for sub-objects of the entity being hydrated
-     * Takes reference to the object being hydrated and creates
+     * Takes reference to the object being hydrated
      * and creates object using setter method
      *
      * @param $object object being hydrated
      * @param $getterName string getter method
      * @param $setterName string setter method
      * @param $className string a key from input JSON string
+     * @throws ClassNotFoundException
      */
     private static function createObjectIfNull(&$object, $getterName, $setterName, $className)
     {
         if (empty($className))
             return;
-        if (!class_exists($className))
-            throw new InvalidArgumentException("Given class {$className} does not exist.");
+
         $className = ucfirst($className);
+
+        if (!class_exists($className))
+            throw new ClassNotFoundException("Given class {$className} does not exist.");
+
         if ($object->$getterName() == null)
             $object->$setterName(new $className());
     }
