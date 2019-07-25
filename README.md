@@ -1,4 +1,8 @@
 # php-gson
+
+![Build Status](https://travis-ci.com/ArchangelDesign/php-gson.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ArchangelDesign/php-gson/badge.svg?branch=master)](https://coveralls.io/github/ArchangelDesign/php-gson?branch=master)
+
 Zero dependency simple PHP entity mapper.
 JSON String to Objcet and Object to JSON String.
 
