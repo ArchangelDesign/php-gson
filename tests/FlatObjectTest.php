@@ -10,7 +10,7 @@
  * @license MIT
  */
 
-require 'entity/FlatObject.php';
+require_once 'entity/FlatObject.php';
 
 use PHPGson\Extractor;
 use PHPGson\Gson;

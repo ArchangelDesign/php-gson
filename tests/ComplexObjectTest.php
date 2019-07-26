@@ -4,7 +4,7 @@
 use PHPGson\Gson;
 use PHPUnit\Framework\TestCase;
 
-require 'entity/ComplexObject.php';
+require_once 'entity/ComplexObject.php';
 
 class ComplexObjectTest extends TestCase
 {
