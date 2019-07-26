@@ -46,7 +46,8 @@ class FlatObjectTest extends TestCase
         $this->assertIsArray($hydrated->getLanguages());
     }
 
-    public function testObjectInstantiation() {
+    public function testObjectInstantiation(): void
+    {
         $hydrated = null;
         Gson::fromJson(
             $hydrated,
@@ -55,5 +56,13 @@ class FlatObjectTest extends TestCase
             FlatObject::class);
         /** @noinspection PhpParamsInspection */
         $this->assertInstanceOf(FlatObject::class, $hydrated);
+    }
+
+    public function testObjectSerialization(): void
+    {
+        $deserialized = json_decode($this->jsonString, true);
+        $this->assertEquals('my-email@gmail.com', $deserialized['email']);
+        $this->assertEquals('225 Baker Street', $deserialized['address']);
+        $this->assertEquals('123 123 123', $deserialized['phoneNumber']);
     }
 }
