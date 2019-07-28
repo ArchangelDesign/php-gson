@@ -1,16 +1,26 @@
 <?php
 
+/**
+ * PHPGson Library
+ * Simple entity mapper for PHP applications
+ * with minimum requirements and dependencies
+ *
+ * @author Rafal Martinez-Marjanski
+ * @package PHPGson
+ * @license MIT
+ */
+
 require_once 'FlatObject.php';
 
 class ComplexObject
 {
-    private $flatObject1 = null;
+    private $flatObject = null;
 
     private $flatObject2 = null;
 
     public function mock() {
-        $this->flatObject1 = new FlatObject();
-        $this->flatObject1->mock();
+        $this->flatObject = new FlatObject();
+        $this->flatObject->mock();
         $this->flatObject2 = new FlatObject();
         $this->flatObject2->mock();
     }
@@ -18,17 +28,17 @@ class ComplexObject
     /**
      * @return null|FlatObject
      */
-    public function getFlatObject1(): ?FlatObject
+    public function getFlatObject(): ?FlatObject
     {
-        return $this->flatObject1;
+        return $this->flatObject;
     }
 
     /**
-     * @param null $flatObject1
+     * @param null $flatObject
      */
-    public function setFlatObject1($flatObject1): void
+    public function setFlatObject($flatObject): void
     {
-        $this->flatObject1 = $flatObject1;
+        $this->flatObject = $flatObject;
     }
 
     /**
